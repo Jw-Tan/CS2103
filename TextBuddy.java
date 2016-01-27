@@ -1,108 +1,126 @@
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.io.BufferedWriter;
 
 public class TextBuddy {
-	
+
+	private static ArrayList<String> currentStrings;
 	private static Scanner sc;
 	private static String inputCommand, tempString, fileName;
-	private static ArrayList<String> currentStrings;
+
 
 	public static void main(String[] args) throws IOException {
 		
-		fileName = args[0];
 		currentStrings = new ArrayList<String>();
-		
-		/**
-		 * Check whether file with same name already exists.
-		 * If yes, extract all present lines into array list.
-		 * Else, create new file with that name. 
-		 */
+		fileName = args[0];
+
 		File f = new File(fileName); //refactor these
+		
+		checkIfFileExists(f);
+		
+		printWelcomeMessage();
+		
+		startWaitingForInput();
+	}
+
+	private static void checkIfFileExists(File f) throws IOException, FileNotFoundException {
 		if (!f.exists()) {
 			f.createNewFile();
 		} else {
-			Scanner scanner = new Scanner(f);
-			while (scanner.hasNextLine()) {
-				String line = scanner.nextLine();
-				currentStrings.add(line);
-			}
-			scanner.close();
+			importLinesFromFile(f);
 		}
-		
-		sc = new Scanner(System.in); //do I need to SLAP a line like this?
-		
-		// for all the prints, should I combine into a function??? esp @ the individual methods below
-		System.out.println("\n" + "Welcome to TextBuddy. " + fileName + " is ready for use" + "\n"); //note I print empty line first
-		
-		getCommand();
-		
-		checkCommand();
-		
-//		System.out.println(currentStrings.get(0));
-//		System.out.println(currentStrings.get(1));
-		
-		BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true));
-		
-//		System.out.println("command?");
-		String input = sc.nextLine();
-//		
-		writer.write(input);
-		writer.newLine();
-//		writer.newLine();
-//		
-		writer.close();	
-		sc.close();
-		
-		//what if file originally contained text, but user did clear, how to write? if cannot, just make new empty file w same name?
-		//or perhaps regardless what commands were ran, just always create a new file and write (if any)??
+	}
+
+	private static void importLinesFromFile(File f) throws FileNotFoundException {
+		Scanner scanner = new Scanner(f);
+		while (scanner.hasNextLine()) {
+			String line = scanner.nextLine();
+			currentStrings.add(line);
+		}
+		scanner.close();
 	}
 	
-	public static void getCommand() {
+	private static void printWelcomeMessage() {
+		System.out.println("\n" + "Welcome to TextBuddy. " + fileName + " is ready for use\n"); //lines like this make column
+	}	
+	
+	private static void startWaitingForInput() throws IOException {
+		sc = new Scanner(System.in);
+		while (true) {
+			askCommand();
+			getCommandFromInput();
+			checkForExitCommand();
+			doCommand();
+			saveFile();
+		}
+	}
+
+	private static void askCommand() {
 		System.out.print("command: ");
-		inputCommand = sc.next();
+	}
+
+	private static void getCommandFromInput() {
+		inputCommand = sc.nextLine();
 		System.out.print("\n");
 	}
+
+	private static void checkForExitCommand() {
+		if (inputCommand.equals("exit")) {
+			System.exit(0);
+		}
+	}
 	
-	public static void checkCommand() {
-		if (inputCommand.equals("add")) {
-			tempString = sc.nextLine();
-			addLine(tempString);
+	private static void doCommand() {
+		if (inputCommand.startsWith("add ")) {
+			if (inputCommand.length() > 4) {
+				tempString = inputCommand.substring(4);
+				addLine(tempString);
+			} else {
+				System.out.println("Invalid command structure. Please include desired text in same line with \"add\"\n");
+			}
 		} else if (inputCommand.equals("display")) {
 			printAllLines();
 		} else if (inputCommand.equals("clear")) {
 			clear();
-		} else if (inputCommand.equals("delete")) {
-			int lineToDelete = sc.nextInt();
-			deleteLine(lineToDelete);
-		} else if (inputCommand.equals("exit")) {
-			return; //need to terminate here!
+		} else if (inputCommand.startsWith("delete ")) {
+			if (inputCommand.length() > 7) {
+				int lineToDelete = Integer.parseInt(inputCommand.substring(inputCommand.length() - 1));
+				deleteLine(lineToDelete);
+			} else {
+				System.out.println("Invalid command structure. Please include desired line number in same line with \"delete\"\n");
+			}
+		} else {
+			System.out.println("Invalid command. Please try again.\n");
 		}
 	}
 	
-	public static void addLine(String line) {
+	private static void addLine(String line) {
 		currentStrings.add(line);
-		System.out.println("added to " + fileName + ": \"" + line + "\"" + "\n");
-		//NOTE i think there is extra space at start of var line!!! try out. ( i take the pound cake!)
+		System.out.println("added to " + fileName + ": \"" + line + "\"\n");
 	}
 	
-	public static void deleteLine(int lineNumber) {
-		tempString = currentStrings.get(lineNumber - 1);
-		currentStrings.remove(lineNumber - 1);
-		System.out.println("deleted from " + fileName + ": \"" + tempString + "\"" + "\n");
+	private static void deleteLine(int lineNumber) {
+		if (lineNumber <= currentStrings.size() && lineNumber > 0) {
+			tempString = currentStrings.get(lineNumber - 1);
+			currentStrings.remove(lineNumber - 1);
+			System.out.println("deleted from " + fileName + ": \"" + tempString + "\"\n");
+		} else {
+			System.out.println("Invalid line number entered. Please try again.\n");
+		}
 	}
 	
-	public static void clear() {
+	private static void clear() {
 		currentStrings.clear();
 		System.out.println("all content deleted from " + fileName + "\n");
 	}
 	
-	public static void printAllLines() {
+	private static void printAllLines() {
 		if (currentStrings.isEmpty()) {
-			System.out.println(fileName + " is empty" + "\n");
+			System.out.println(fileName + " is empty\n");
 		} else {
 			int count = 0;
 			for (String s : currentStrings) {
@@ -110,5 +128,25 @@ public class TextBuddy {
 				System.out.println(count + ". " + s + "\n");
 			}
 		}
+	}
+	
+	private static void saveFile() throws IOException {
+		BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, false));
+		makeNewFile();
+		if (currentStrings.isEmpty()) {
+			writer.close();
+			return;
+		} else {
+			for (String s : currentStrings) {
+				writer.write(s);
+				writer.newLine();
+			}
+		}
+		writer.close();
+	}
+	
+	private static void makeNewFile() throws IOException {
+		File f = new File(fileName);
+		f.createNewFile();
 	}
 }
