@@ -34,15 +34,15 @@ public class TextBuddy {
 	private static Scanner sc;
 	private static String inputCommand, fileName;
 	private static final int INDEX_OF_FILENAME = 0;
-	private static final String MESSAGE_WELCOME = "Welcome to TextBuddy. %1$s is ready for use";
-	private static final String MESSAGE_ALL_CLEARED = "all content deleted from %1$s";
-	private static final String MESSAGE_EMPTY_FILE = "%1$s is empty";
-	private static final String MESSAGE_LINE_ADDED = "added to %1$s: \"%2$s\"";
-	private static final String MESSAGE_NO_TEXT = "Please include desired text in same line with \"add\"";
-	private static final String MESSAGE_LINE_DELETED = "deleted from %1$s: \"%2$s\"";
-	private static final String MESSAGE_NO_LINE_NUMBER = "Please include desired line number in same line with \"delete\"";
-	private static final String MESSAGE_INVALID_LINE_NUMBER = "Invalid line number entered. Please try again.";
-	private static final String MESSAGE_INVALID_COMMAND = "Invalid command. Please try again.";	
+	private static final String WELCOME_MESSAGE = "Welcome to TextBuddy. %1$s is ready for use";
+	private static final String ALL_CLEARED_FEEDBACK = "all content deleted from %1$s";
+	private static final String FILE_IS_EMPTY = "%1$s is empty";
+	private static final String LINE_ADDED_FEEDBACK = "added to %1$s: \"%2$s\"";
+	private static final String NO_TEXT_TO_ADD_ERROR = "Please include desired text in same line with \"add\"";
+	private static final String LINE_DELETED_FEEDBACK = "deleted from %1$s: \"%2$s\"";
+	private static final String NO_LINE_NUMBER_ERROR = "Please include desired line number in same line with \"delete\"";
+	private static final String INVALID_LINE_NUMBER_ERROR = "Invalid line number entered. Please try again.";
+	private static final String INVALID_COMMAND_ERROR = "Invalid command. Please try again.";	
 
 	/**
 	 * Main method of the program.
@@ -80,7 +80,7 @@ public class TextBuddy {
 	}
 
 	/**
-	 * Adds all lines of text of the file into an arraylist.
+	 * Adds all lines of text in the file into an arraylist.
 	 * 
 	 * @param f       The file from which text will be extracted.
 	 */
@@ -93,8 +93,11 @@ public class TextBuddy {
 		scanner.close();
 	}
 
+	/**
+	 * Shows to user the welcome message with the filename that was used. 
+	 */
 	private static void printWelcomeMessage() {
-		System.out.println(String.format(MESSAGE_WELCOME, fileName));
+		System.out.println(String.format(WELCOME_MESSAGE, fileName));
 	}	
 
 	/**
@@ -111,14 +114,23 @@ public class TextBuddy {
 		}
 	}
 
+	/**
+	 * Shows to user a query for command.
+	 */
 	private static void askForCommand() {
 		System.out.print("command: ");
 	}
 
+	/**
+	 * Stores command typed by user.
+	 */
 	private static void storeCommandFromInput() {
 		inputCommand = sc.nextLine();
 	}
 
+	/**
+	 * Checks if the command given was "exit" and terminates accordingly.
+	 */
 	private static void checkForExitCommand() {
 		if (inputCommand.equals("exit")) {
 			System.exit(0);
@@ -139,7 +151,7 @@ public class TextBuddy {
 		} else if (inputCommand.startsWith("delete ")) {
 			tryToDelete();
 		} else {
-			System.out.println(MESSAGE_INVALID_COMMAND);
+			System.out.println(INVALID_COMMAND_ERROR);
 		}
 	}
 
@@ -152,7 +164,7 @@ public class TextBuddy {
 			String stringToAdd = inputCommand.substring(4);
 			addLine(stringToAdd);
 		} else {
-			System.out.println(MESSAGE_NO_TEXT);
+			System.out.println(NO_TEXT_TO_ADD_ERROR);
 		}
 	}
 
@@ -163,7 +175,7 @@ public class TextBuddy {
 	 */
 	private static void addLine(String line) {
 		currentStrings.add(line);
-		System.out.println(String.format(MESSAGE_LINE_ADDED, fileName, line));
+		System.out.println(String.format(LINE_ADDED_FEEDBACK, fileName, line));
 	}
 
 	/**
@@ -176,7 +188,7 @@ public class TextBuddy {
 			int lineToDelete = Integer.parseInt(inputCommand.substring(inputCommand.length() - 1));
 			deleteLine(lineToDelete);
 		} else {
-			System.out.println(MESSAGE_NO_LINE_NUMBER);
+			System.out.println(NO_LINE_NUMBER_ERROR);
 		}
 	}
 
@@ -190,20 +202,27 @@ public class TextBuddy {
 		if (lineNumber <= currentStrings.size() && lineNumber > 0) {
 			String deletedString = currentStrings.get(lineNumber - 1);
 			currentStrings.remove(lineNumber - 1);
-			System.out.println(String.format(MESSAGE_LINE_DELETED, fileName, deletedString));
+			System.out.println(String.format(LINE_DELETED_FEEDBACK, fileName, deletedString));
 		} else {
-			System.out.println(MESSAGE_INVALID_LINE_NUMBER);
+			System.out.println(INVALID_LINE_NUMBER_ERROR);
 		}
 	}
 
+	/**
+	 * Deletes all lines and informs the user.
+	 */
 	private static void clear() {
 		currentStrings.clear();
-		System.out.println(String.format(MESSAGE_ALL_CLEARED, fileName));
+		System.out.println(String.format(ALL_CLEARED_FEEDBACK, fileName));
 	}
 
+	/**
+	 * Attempt to print all stored lines.
+	 * If no lines are stored, informs the user.
+	 */
 	private static void printAllLines() {
 		if (currentStrings.isEmpty()) {
-			System.out.println(String.format(MESSAGE_EMPTY_FILE, fileName));
+			System.out.println(String.format(FILE_IS_EMPTY, fileName));
 		} else {
 			printEachLineWithNumbering();
 		}
@@ -221,7 +240,7 @@ public class TextBuddy {
 	}
 
 	/**
-	 * Writes all lines from the arraylist, if any, into the file.
+	 * Writes all lines in the arraylist, if any, into the file.
 	 */
 	private static void saveFile() throws IOException {
 		BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, false));
