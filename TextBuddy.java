@@ -42,6 +42,8 @@ public class TextBuddy {
 	private static final String MESSAGE_LINE_DELETED = "deleted from %1$s: \"%2$s\"";
 	private static final String MESSAGE_NO_LINE_NUMBER = "Please include desired line number in same line with \"delete\"";
 	private static final String MESSAGE_LINES_SORTED = "All lines have been sorted alphabetically";
+	private static final String MESSAGE_NO_SEARCH_KEYWORD = "Please include search keyword";
+	private static final String MESSAGE_NO_MATCH_FOUND = "There is no line containing the search keyword";
 	private static final String MESSAGE_INVALID_LINE_NUMBER = "Invalid line number entered. Please try again";
 	private static final String MESSAGE_INVALID_COMMAND = "Invalid command. Please try again";	
 
@@ -136,13 +138,15 @@ public class TextBuddy {
 		if (command.startsWith("add ")) {
 			return tryToAdd(currentStrings, command);
 		} else if (command.equals("display")) {
-			return printAllLines();
+			return printAllLines(currentStrings);
 		} else if (command.equals("clear")) {
 			return clear(currentStrings);
 		} else if (command.startsWith("delete ")) {
 			return tryToDelete(currentStrings, command);
 		} else if (command.equals("sort")) {
 			return sortAllLines();
+		} else if (command.startsWith("search ")) {
+			return tryToSearch(currentStrings, command);
 		} else {
 			return MESSAGE_INVALID_COMMAND;
 		}
@@ -237,18 +241,18 @@ public class TextBuddy {
 		return String.format(MESSAGE_ALL_CLEARED, fileName);
 	}
 
-	public static String printAllLines() {
+	public static String printAllLines(ArrayList<String> arrayList) {
 		if (currentStrings.isEmpty()) {
 			return String.format(MESSAGE_EMPTY_FILE, fileName);
 		} else {
-			return printEachLineWithNumbering();
+			return printEachLineWithNumbering(arrayList);
 		}
 	}
 
 	/**
 	 * Prints each stored line preceded by an ascending count number.
 	 */
-	public static String printEachLineWithNumbering() {		
+	public static String printEachLineWithNumbering(ArrayList<String> arrayList) {		
 		String allLines = "";
 		int count = 0;
 		for (String s : currentStrings) {
@@ -261,6 +265,38 @@ public class TextBuddy {
 	public static String sortAllLines() {
 		currentStrings.sort(String.CASE_INSENSITIVE_ORDER);
 		return MESSAGE_LINES_SORTED;
+	}
+	
+	public static String tryToSearch(ArrayList<String> arrayList, String command) {
+		if (hasTextToSearch(command)) {
+			return searchFor(arrayList, extractKeywordFromCommand(command));
+		} else {
+			return MESSAGE_NO_SEARCH_KEYWORD;
+		}
+	}
+	
+	public static boolean hasTextToSearch(String command) {
+		return (command.length() > 7);
+	}
+
+	public static String extractKeywordFromCommand(String command) {
+		String stringToSearch = command.substring(7);
+		return stringToSearch;
+	}
+	
+	public static String searchFor(ArrayList<String> arrayList, String keyword) {
+		String searchResults = "";
+		int count = 0;
+		for (String s : arrayList) {
+			count++;
+			if (s.toLowerCase().contains(keyword.toLowerCase())) {
+				searchResults += count + ". " + s + "\n";
+			}
+		}
+		if (!searchResults.isEmpty()) {
+			return searchResults;
+		}		
+		return MESSAGE_NO_MATCH_FOUND;
 	}
 
 	/**
