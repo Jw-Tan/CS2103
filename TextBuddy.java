@@ -41,6 +41,7 @@ public class TextBuddy {
 	private static final String MESSAGE_NO_TEXT = "Please include desired text in same line with \"add\"";
 	private static final String MESSAGE_LINE_DELETED = "deleted from %1$s: \"%2$s\"";
 	private static final String MESSAGE_NO_LINE_NUMBER = "Please include desired line number in same line with \"delete\"";
+	private static final String MESSAGE_LINES_SORTED = "All lines have been sorted alphabetically";
 	private static final String MESSAGE_INVALID_LINE_NUMBER = "Invalid line number entered. Please try again";
 	private static final String MESSAGE_INVALID_COMMAND = "Invalid command. Please try again";	
 
@@ -140,6 +141,8 @@ public class TextBuddy {
 			return clear(currentStrings);
 		} else if (command.startsWith("delete ")) {
 			return tryToDelete(currentStrings, command);
+		} else if (command.equals("sort")) {
+			return sortAllLines();
 		} else {
 			return MESSAGE_INVALID_COMMAND;
 		}
@@ -253,6 +256,11 @@ public class TextBuddy {
 			allLines += count + ". " + s + "\n";
 		}
 		return allLines;
+	}
+	
+	public static String sortAllLines() {
+		currentStrings.sort(String.CASE_INSENSITIVE_ORDER);
+		return MESSAGE_LINES_SORTED;
 	}
 
 	/**
