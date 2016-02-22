@@ -106,7 +106,7 @@ public class TextBuddy {
 			askForCommand();
 			storeCommandFromInput();
 			checkForExitCommand();
-			doCommand(inputCommand);
+			System.out.println(doCommand(inputCommand));
 			saveFile();
 		}
 	}
@@ -131,17 +131,17 @@ public class TextBuddy {
 	 * 
 	 * @param command User input command.
 	 */
-	public static void doCommand(String command) {
+	public static String doCommand(String command) {
 		if (command.startsWith("add ")) {
-			tryToAdd(currentStrings, command);
+			return tryToAdd(currentStrings, command);
 		} else if (command.equals("display")) {
-			printAllLines();
+			return printAllLines();
 		} else if (command.equals("clear")) {
-			clear(currentStrings);
+			return clear(currentStrings);
 		} else if (command.startsWith("delete ")) {
-			tryToDelete(currentStrings, command);
+			return tryToDelete(currentStrings, command);
 		} else {
-			System.out.println(MESSAGE_INVALID_COMMAND);
+			return MESSAGE_INVALID_COMMAND;
 		}
 	}
 
@@ -152,11 +152,11 @@ public class TextBuddy {
 	 * @param arrayList The arraylist to which the intended line will be added.
 	 * @param command User input command.
 	 */
-	public static void tryToAdd(ArrayList<String> arrayList, String command) {
+	public static String tryToAdd(ArrayList<String> arrayList, String command) {
 		if (hasTextToAdd(command)) {	
-			addLine(arrayList, extractTextFromCommand(command));
+			return addLine(arrayList, extractTextFromCommand(command));
 		} else {
-			System.out.println(MESSAGE_NO_TEXT);
+			return MESSAGE_NO_TEXT;
 		}
 	}
 	
@@ -181,9 +181,9 @@ public class TextBuddy {
 	 * 
 	 * @param line The line to be added.
 	 */
-	public static void addLine(ArrayList<String> arrayList, String line) {
+	public static String addLine(ArrayList<String> arrayList, String line) {
 		arrayList.add(line);
-		System.out.println(String.format(MESSAGE_LINE_ADDED, fileName, line));
+		return String.format(MESSAGE_LINE_ADDED, fileName, line);
 	}
 
 	/**
@@ -191,12 +191,12 @@ public class TextBuddy {
 	 * If so, extracts the line number and attempts to delete that line.
 	 * If not, informs the user. 
 	 */
-	public static void tryToDelete(ArrayList<String> arrayList, String command) {
+	public static String tryToDelete(ArrayList<String> arrayList, String command) {
 		if (isCommandLongEnough(command)) {
 			int lineToDelete = extractLineNumberFromCommand(command);
-			deleteLine(arrayList, lineToDelete);
+			return deleteLine(arrayList, lineToDelete);
 		} else {
-			System.out.println(MESSAGE_NO_LINE_NUMBER);
+			return MESSAGE_NO_LINE_NUMBER;
 		}
 	}
 	
@@ -219,42 +219,40 @@ public class TextBuddy {
 	 * 
 	 * @param lineNumber The number corresponding to the line that is to be deleted.
 	 */
-	public static void deleteLine(ArrayList<String> arrayList, int lineNumber) {
-		if (lineNumber <= 0) {
-			System.out.println(MESSAGE_INVALID_LINE_NUMBER);
+	public static String deleteLine(ArrayList<String> arrayList, int lineNumber) {
+		if (lineNumber <= 0 || lineNumber > arrayList.size()) {
+			return MESSAGE_INVALID_LINE_NUMBER;
 		} else {
-			if (lineNumber <= arrayList.size()) {
-				String deletedString = arrayList.get(lineNumber - 1);
-				arrayList.remove(lineNumber - 1);
-				System.out.println(String.format(MESSAGE_LINE_DELETED, fileName, deletedString));
-			} else {
-				System.out.println(MESSAGE_INVALID_LINE_NUMBER);
-			}
+			String deletedString = arrayList.get(lineNumber - 1);
+			arrayList.remove(lineNumber - 1);
+			return String.format(MESSAGE_LINE_DELETED, fileName, deletedString);
 		}
 	}
 
-	public static void clear(ArrayList<String> arrayList) {
+	public static String clear(ArrayList<String> arrayList) {
 		arrayList.clear();
-		System.out.println(String.format(MESSAGE_ALL_CLEARED, fileName));
+		return String.format(MESSAGE_ALL_CLEARED, fileName);
 	}
 
-	public static void printAllLines() {
+	public static String printAllLines() {
 		if (currentStrings.isEmpty()) {
-			System.out.println(String.format(MESSAGE_EMPTY_FILE, fileName));
+			return String.format(MESSAGE_EMPTY_FILE, fileName);
 		} else {
-			printEachLineWithNumbering();
+			return printEachLineWithNumbering();
 		}
 	}
 
 	/**
 	 * Prints each stored line preceded by an ascending count number.
 	 */
-	public static void printEachLineWithNumbering() {
+	public static String printEachLineWithNumbering() {		
+		String allLines = "";
 		int count = 0;
 		for (String s : currentStrings) {
 			count++;
-			System.out.println(count + ". " + s);
+			allLines += count + ". " + s + "\n";
 		}
+		return allLines;
 	}
 
 	/**
