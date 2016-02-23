@@ -112,7 +112,7 @@ public class TextBuddyTest {
 		ArrayList<String> testArrayList = new ArrayList<String>();
 		testArrayList.add("this is a test line");
 		
-		//uses the search function with various command inputs and check for correct feedback
+		// uses the search function with various command inputs and check for correct feedback
 		assertEquals("Please include search keyword", TextBuddy.tryToSearch(testArrayList, "search "));
 		assertEquals("There is no line containing the keyword cat", TextBuddy.tryToSearch(testArrayList, "search cat"));
 		assertEquals("1. this is a test line", TextBuddy.tryToSearch(testArrayList, "search test"));
