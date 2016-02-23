@@ -297,12 +297,27 @@ public class TextBuddy {
 	 */
 	public static String printEachLineWithNumbering(ArrayList<String> arrayList) {		
 		String allLines = "";
-		int count = 0;
+		int lineCount = 0;
 		for (String s : arrayList) {
-			count++;
-			allLines += count + ". " + s + "\n";
+			lineCount++;
+			allLines = addNewLineIfSecondLineOrMore(allLines, lineCount);
+			allLines += lineCount + ". " + s;
 		}
 		return allLines;
+	}
+	
+	/**
+	 * Adds newline from second line onwards
+	 * 
+	 * @param currentString All strings currently compiled.
+	 * @param lineCount     Current line number 
+	 * @return              currentStrings with newline added (if appropriate)  
+	 */
+	public static String addNewLineIfSecondLineOrMore(String currentString, int lineCount) {
+		if (lineCount > 1) {
+			currentString += "\n";
+		}
+		return currentString;
 	}
 	
 	/**
