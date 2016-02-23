@@ -242,7 +242,7 @@ public class TextBuddy {
 			return lineToDelete;
 		} catch (NumberFormatException e) {
 			return 0;
-        }
+		}
 	}
 
 	/**
