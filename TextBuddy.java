@@ -298,7 +298,7 @@ public class TextBuddy {
 	public static String printEachLineWithNumbering(ArrayList<String> arrayList) {		
 		String allLines = "";
 		int count = 0;
-		for (String s : currentStrings) {
+		for (String s : arrayList) {
 			count++;
 			allLines += count + ". " + s + "\n";
 		}
