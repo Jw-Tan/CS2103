@@ -26,7 +26,7 @@ public class TextBuddyTest {
 
 	@Test
 	public void testTryToAdd() {
-		// creates a dummy arraylist, a valid input command and an invalid input command
+		// creates a test arraylist, a valid input command and an invalid input command
 		ArrayList<String> testArrayList = new ArrayList<String>();
 		String inputCommand1 = "add this is a test line";
 		String inputCommand2 = "add ";
@@ -44,9 +44,10 @@ public class TextBuddyTest {
 
 	@Test
 	public void testTryToDelete() {
-		// creates a dummy arraylist and adds a line to it
+		// creates a test arraylist and adds 2 lines to it
 		ArrayList<String> testArrayList = new ArrayList<String>();
-		testArrayList.add("this is a test line");
+		testArrayList.add("this is test line 1");
+		testArrayList.add("this is test line 2");
 		
 		// uses delete function with invalid input (no number) and checks for correct feedback and that no line is deleted
 		String inputCommand1 = "delete ";
@@ -60,7 +61,21 @@ public class TextBuddyTest {
 		
 		// uses delete function with valid input and checks for correct feedback and that the line has been deleted
 		String inputCommand3 = "delete 1";
-		assertEquals("deleted from testfile.txt: \"this is a test line\"", TextBuddy.tryToDelete(testArrayList, inputCommand3));
+		assertEquals("deleted from testfile.txt: \"this is test line 1\"", TextBuddy.tryToDelete(testArrayList, inputCommand3));
+		assertEquals(1, testArrayList.size());
+		
+		// checks that check that the correct line was deleted
+		assertEquals("this is test line 2", testArrayList.get(0));
+	}
+
+	@Test
+	public void testClear() {
+		// creates a test arraylist and adds a line to it 
+		ArrayList<String> testArrayList = new ArrayList<String>();
+		testArrayList.add("this is a test line");
+		
+		// uses the clear function and check that the arraylist has been emptied 
+		TextBuddy.clear(testArrayList);
 		assertTrue(testArrayList.isEmpty());
 	}
 }
