@@ -132,7 +132,8 @@ public class TextBuddy {
 	 * Compares the command given and performs the appropriate method.
 	 * Informs user if an invalid command was enter.
 	 * 
-	 * @param command User input command.
+	 * @param  command User input command.
+	 * @return         Feedback for command.
 	 */
 	public static String doCommand(String command) {
 		if (command.startsWith("add ")) {
@@ -144,7 +145,7 @@ public class TextBuddy {
 		} else if (command.startsWith("delete ")) {
 			return tryToDelete(currentStrings, command);
 		} else if (command.equals("sort")) {
-			return sortAllLines();
+			return sortAllLines(currentStrings);
 		} else if (command.startsWith("search ")) {
 			return tryToSearch(currentStrings, command);
 		} else {
@@ -157,7 +158,8 @@ public class TextBuddy {
 	 * If so, add the line to the arraylist. If not, informs the user.
 	 * 
 	 * @param arrayList The arraylist to which the intended line will be added.
-	 * @param command User input command.
+	 * @param command   User input command.
+	 * @return          Feedback for command.
 	 */
 	public static String tryToAdd(ArrayList<String> arrayList, String command) {
 		if (hasTextToAdd(command)) {	
@@ -172,12 +174,18 @@ public class TextBuddy {
 	 * Inputs like "add " are invalid and must be detected.
 	 * 
 	 * @param  command User input command.
-	 * @return Whether command length is more than 4.
+	 * @return         Whether command length is more than 4.
 	 */
 	public static boolean hasTextToAdd(String command) {
 		return (command.length() > 4);
 	}
 	
+	/**
+	 * Retrieves the line to be added from the command.
+	 * 
+	 * @param  command User input command.
+	 * @return         The line to be added.
+	 */
 	public static String extractTextFromCommand(String command) {
 		String stringToAdd = command.substring(4);
 		return stringToAdd;
@@ -186,7 +194,8 @@ public class TextBuddy {
 	/**
 	 * Adds the text to the arraylist and informs the user of it.
 	 * 
-	 * @param line The line to be added.
+	 * @param arrayList The arraylist to which the intended line will be added.
+	 * @param line      The  line to be added.
 	 */
 	public static String addLine(ArrayList<String> arrayList, String line) {
 		arrayList.add(line);
@@ -197,6 +206,10 @@ public class TextBuddy {
 	 * Checks if the add command is of the correct format.
 	 * If so, extracts the line number and attempts to delete that line.
 	 * If not, informs the user. 
+	 * 
+	 * @param arrayList The arraylist from which the intended line will be deleted.
+	 * @param command   User input command.
+	 * @return          Feedback for command.
 	 */
 	public static String tryToDelete(ArrayList<String> arrayList, String command) {
 		if (isCommandLongEnough(command)) {
@@ -207,10 +220,22 @@ public class TextBuddy {
 		}
 	}
 	
+	/**
+	 * Check if command is more than just "delete ".
+	 * 
+	 * @param command User input command.
+	 * @return        Whether command length is longer than 7. 
+	 */
 	public static boolean isCommandLongEnough(String command) {
 		return (command.length() > 7);
 	}
 	
+	/**
+	 * Retrieves line number from delete command
+	 * 
+	 * @param  command User input command.
+	 * @return         Line number input by user or 0 if invalid number was typed.
+	 */
 	public static int extractLineNumberFromCommand(String command) {
 		try {
 			int lineToDelete = Integer.parseInt(command.substring(7));
@@ -222,9 +247,11 @@ public class TextBuddy {
 
 	/**
 	 * Checks whether the line number is valid relative to the amount of lines currently stored.
-	 * If so, deletes that line and update the user. Otherwise, informs the user.
+	 * If so, deletes that line. Returns feedback string to update the user.
 	 * 
+	 * @param arrayList  The arraylist from which the intended line will be deleted.
 	 * @param lineNumber The number corresponding to the line that is to be deleted.
+	 * @return           Feedback for command.
 	 */
 	public static String deleteLine(ArrayList<String> arrayList, int lineNumber) {
 		if (lineNumber <= 0 || lineNumber > arrayList.size()) {
@@ -236,11 +263,24 @@ public class TextBuddy {
 		}
 	}
 
+	/**
+	 * Empties the arraylist containing all currently stored lines.
+	 * 
+	 * @param arrayList The arraylist from which lines will be deleted.
+	 * @return          Feedback for command.
+	 */
 	public static String clear(ArrayList<String> arrayList) {
 		arrayList.clear();
 		return String.format(MESSAGE_ALL_CLEARED, fileName);
 	}
 
+	/**
+	 * Checks if there are any stored lines and return them as a string.
+	 * If not, informs the user.
+	 * 
+	 * @param arrayList The arraylist from which lines will be printed.
+	 * @return          Empty file feedback or string containing all lines.
+	 */
 	public static String printAllLines(ArrayList<String> arrayList) {
 		if (currentStrings.isEmpty()) {
 			return String.format(MESSAGE_EMPTY_FILE, fileName);
@@ -250,7 +290,10 @@ public class TextBuddy {
 	}
 
 	/**
-	 * Prints each stored line preceded by an ascending count number.
+	 * Returns a string containing every stored line preceded by an ascending count number.
+	 * 
+	 * @param arrayList The arraylist from which lines will be printed.
+	 * @return          String containing all lines.
 	 */
 	public static String printEachLineWithNumbering(ArrayList<String> arrayList) {		
 		String allLines = "";
@@ -262,11 +305,25 @@ public class TextBuddy {
 		return allLines;
 	}
 	
-	public static String sortAllLines() {
-		currentStrings.sort(String.CASE_INSENSITIVE_ORDER);
+	/**
+	 * Sorts all lines stored in the arraylist in non-case-sensitive alphabetical order.
+	 * 
+	 * @param arrayList The arraylist to be sorted.
+	 * @return Feedback for command.
+	 */
+	public static String sortAllLines(ArrayList<String> arrayList) {
+		arrayList.sort(String.CASE_INSENSITIVE_ORDER);
 		return MESSAGE_LINES_SORTED;
 	}
 	
+	/**
+	 * Checks if user input command has keyword. If so, searches through stored lines for it.
+	 * If not, inform the user.
+	 * 
+	 * @param arrayList The arraylist to search through.
+	 * @param command   User input command.
+	 * @return          Feedback for command.
+	 */
 	public static String tryToSearch(ArrayList<String> arrayList, String command) {
 		if (hasTextToSearch(command)) {
 			return searchFor(arrayList, extractKeywordFromCommand(command));
@@ -275,17 +332,52 @@ public class TextBuddy {
 		}
 	}
 	
+	/**
+	 * Checks if command is more than just "search ".
+	 * 
+	 * @param command User input command.
+	 * @return        Whether command has keyword.
+	 */
 	public static boolean hasTextToSearch(String command) {
 		return (command.length() > 7);
 	}
 
+	/**
+	 * Retrieves the keyword typed by the user from the input command.
+	 * 
+	 * @param command User input command.
+	 * @return        User input search keyword.
+	 */
 	public static String extractKeywordFromCommand(String command) {
 		String stringToSearch = command.substring(7);
 		return stringToSearch;
 	}
 	
+	/**
+	 * Searches through the arraylist for the keyword.
+	 * 
+	 * @param arrayList The arraylist to search through.
+	 * @param keyword   The keyword to search for.
+	 * @return          String containing matching lines or feedback for command.
+	 */
 	public static String searchFor(ArrayList<String> arrayList, String keyword) {
 		String searchResults = "";
+		searchResults = compareEveryLine(arrayList, keyword, searchResults);
+		if (!searchResults.isEmpty()) {
+			return searchResults;
+		}		
+		return MESSAGE_NO_MATCH_FOUND;
+	}
+
+	/**
+	 * Searches through the arraylist for the keyword.
+	 * 
+	 * @param arrayList     The arraylist to search through.
+	 * @param keyword       The keyword to search for.
+	 * @param searchResults Empty string to hold matching lines that may be found.
+	 * @return              A string containing all lines (if any) containing the keyword.
+	 */
+	public static String compareEveryLine(ArrayList<String> arrayList, String keyword, String searchResults) {
 		int count = 0;
 		for (String s : arrayList) {
 			count++;
@@ -293,10 +385,7 @@ public class TextBuddy {
 				searchResults += count + ". " + s + "\n";
 			}
 		}
-		if (!searchResults.isEmpty()) {
-			return searchResults;
-		}		
-		return MESSAGE_NO_MATCH_FOUND;
+		return searchResults;
 	}
 
 	/**
@@ -318,7 +407,7 @@ public class TextBuddy {
 	}
 
 	/**
-	 * Creates a new file with the respective filename.
+	 * Creates a file with the given filename.
 	 */
 	public static void makeNewFile() throws IOException {
 		File f = new File(fileName);
