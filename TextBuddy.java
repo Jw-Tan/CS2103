@@ -282,7 +282,7 @@ public class TextBuddy {
 	 * @return          Empty file feedback or string containing all lines.
 	 */
 	public static String printAllLines(ArrayList<String> arrayList) {
-		if (currentStrings.isEmpty()) {
+		if (arrayList.isEmpty()) {
 			return String.format(MESSAGE_EMPTY_FILE, fileName);
 		} else {
 			return printEachLineWithNumbering(arrayList);
@@ -412,5 +412,9 @@ public class TextBuddy {
 	public static void makeNewFile() throws IOException {
 		File f = new File(fileName);
 		f.createNewFile();
+	}
+	
+	public static void setFileName(String name) {
+		fileName = name;
 	}
 }
