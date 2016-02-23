@@ -92,4 +92,17 @@ public class TextBuddyTest {
 		testArrayList.add("this is test line 2");
 		assertEquals("1. this is test line 1\n2. this is test line 2", TextBuddy.printAllLines(testArrayList));
 	}
+	
+	@Test
+	public void testSortAllLines() {
+		// creates a test arraylist and adds 2 lines to it
+		ArrayList<String> testArrayList = new ArrayList<String>();
+		testArrayList.add("Eve");
+		testArrayList.add("Adam");
+		
+		// checks the arraylist before and after using the sort function, as well as for correct feedback
+		assertEquals("Eve", testArrayList.get(0));
+		assertEquals("All lines have been sorted alphabetically", TextBuddy.sortAllLines(testArrayList));
+		assertEquals("Adam", testArrayList.get(0));
+	}
 }
