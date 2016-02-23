@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Scanner;
 
 /**
@@ -327,7 +328,7 @@ public class TextBuddy {
 	 * @return Feedback for command.
 	 */
 	public static String sortAllLines(ArrayList<String> arrayList) {
-		arrayList.sort(String.CASE_INSENSITIVE_ORDER);
+		Collections.sort(arrayList, String.CASE_INSENSITIVE_ORDER);
 		return MESSAGE_LINES_SORTED;
 	}
 	
