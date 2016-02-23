@@ -43,7 +43,7 @@ public class TextBuddy {
 	private static final String MESSAGE_NO_LINE_NUMBER = "Please include desired line number in same line with \"delete\"";
 	private static final String MESSAGE_LINES_SORTED = "All lines have been sorted alphabetically";
 	private static final String MESSAGE_NO_SEARCH_KEYWORD = "Please include search keyword";
-	private static final String MESSAGE_NO_MATCH_FOUND = "There is no line containing the search keyword";
+	private static final String MESSAGE_NO_MATCH_FOUND = "There is no line containing the keyword %1$s";
 	private static final String MESSAGE_INVALID_LINE_NUMBER = "Invalid line number entered. Please try again";
 	private static final String MESSAGE_INVALID_COMMAND = "Invalid command. Please try again";	
 
@@ -314,7 +314,7 @@ public class TextBuddy {
 	 * @return              currentStrings with newline added (if appropriate)  
 	 */
 	public static String addNewLineIfSecondLineOrMore(String currentString, int lineCount) {
-		if (lineCount > 1) {
+		if (!currentString.isEmpty()) {
 			currentString += "\n";
 		}
 		return currentString;
@@ -381,7 +381,7 @@ public class TextBuddy {
 		if (!searchResults.isEmpty()) {
 			return searchResults;
 		}		
-		return MESSAGE_NO_MATCH_FOUND;
+		return String.format(MESSAGE_NO_MATCH_FOUND, keyword);
 	}
 
 	/**
@@ -393,11 +393,12 @@ public class TextBuddy {
 	 * @return              A string containing all lines (if any) containing the keyword.
 	 */
 	public static String compareEveryLine(ArrayList<String> arrayList, String keyword, String searchResults) {
-		int count = 0;
+		int lineCount = 0;
 		for (String s : arrayList) {
-			count++;
+			lineCount++;
 			if (s.toLowerCase().contains(keyword.toLowerCase())) {
-				searchResults += count + ". " + s + "\n";
+				searchResults = addNewLineIfSecondLineOrMore(searchResults, lineCount);
+				searchResults += lineCount + ". " + s;
 			}
 		}
 		return searchResults;
