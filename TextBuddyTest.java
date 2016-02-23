@@ -74,8 +74,22 @@ public class TextBuddyTest {
 		ArrayList<String> testArrayList = new ArrayList<String>();
 		testArrayList.add("this is a test line");
 		
-		// uses the clear function and check that the arraylist has been emptied 
-		TextBuddy.clear(testArrayList);
+		// uses the clear function and check for correct feedback and that the arraylist has been emptied 
+		assertEquals("all content deleted from testfile.txt", TextBuddy.clear(testArrayList));
 		assertTrue(testArrayList.isEmpty());
+	}
+
+	@Test
+	public void testPrintAllLines() {
+		// creates a test arraylist 
+		ArrayList<String> testArrayList = new ArrayList<String>();
+		
+		// uses the display function on empty arraylist and check for correct feedback
+		assertEquals("testfile.txt is empty", TextBuddy.printAllLines(testArrayList));
+		
+		// adds 2 lines to the arraylist and checks the display feedback is correct
+		testArrayList.add("this is test line 1");
+		testArrayList.add("this is test line 2");
+		assertEquals("1. this is test line 1\n2. this is test line 2", TextBuddy.printAllLines(testArrayList));
 	}
 }
